@@ -1,14 +1,7 @@
 
-function initModal() {
-    var myModal = new bootstrap.Modal(document.getElementById('infoModal'), {
-        keyboard: false
-    });
-}
-
 // Call this function when the page loads
 document.addEventListener('DOMContentLoaded', function() {
     getUserLocation();
-    initModal();
 });
 
 
@@ -19,7 +12,7 @@ function handleSearch() {
         return;
     }
     getWeather(city);
-}
+} 
 
 function getWeather(city = null) {
     const weatherUrl = city 
