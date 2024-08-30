@@ -1,3 +1,26 @@
+
+function initModal() {
+    var myModal = new bootstrap.Modal(document.getElementById('infoModal'), {
+        keyboard: false
+    });
+}
+
+// Call this function when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    getUserLocation();
+    initModal();
+});
+
+
+function handleSearch() {
+    const city = document.getElementById('city').value;
+    if (!city) {
+        alert('Please enter a city');
+        return;
+    }
+    getWeather(city);
+}
+
 function getWeather(city = null) {
     const weatherUrl = city 
         ? `/weather?city=${encodeURIComponent(city)}`
@@ -33,16 +56,18 @@ function displayCurrentWeather(data) {
         const iconCode = data.weather[0].icon;
         const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@4x.png`;
 
+        const weatherHtml = `
+        <p>${cityName}</p>
+        <p>${description}</p>
+        `;
+
         const temperatureHTML = `
             <p>${temperature}°C</p>
         `;
-        const weatherHtml = `
-            <p>${cityName}</p>
-            <p>${description}</p>
-        `;
-
-        tempDivInfo.innerHTML = temperatureHTML;
+       
         weatherInfoDiv.innerHTML = weatherHtml;
+        tempDivInfo.innerHTML = temperatureHTML;
+       
         weatherIcon.src = iconUrl;
         weatherIcon.alt = description;
         weatherIcon.style.display = 'block';
@@ -56,7 +81,7 @@ function displayForecast(data) {
     const dailyForecasts = data.list.filter((item, index) => index % 8 === 0);
 
     dailyForecasts.forEach(item => {
-        const date = new Date(item.dt * 1000);
+        const date = new Date(item.dt * 1000); // Convert Unix timestamp to JavaScript object 
         const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
         const temperature = Math.round(item.main.temp - 273.15);
         const description = item.weather[0].description;
@@ -75,15 +100,7 @@ function displayForecast(data) {
     });
 }
 
-function handleSearch() {
-    const city = document.getElementById('city').value;
-    if (!city) {
-        alert('Please enter a city');
-        return;
-    }
-    getWeather(city);
-}
-
+// Get the user's location to display the location's weather
 function getUserLocation() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
